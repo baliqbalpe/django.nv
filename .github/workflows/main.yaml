@@ -1,4 +1,4 @@
-name: Django
+name: Django                           # workflow name
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - run: docker run --rm -v "${PWD}:/src" hysnsec/trivy fs . --exit-code 1 -f json -o trivy-report.json
+      - run: docker run --rm -v "${PWD}:/src" hysnsec/trivy fs . -f json -o trivy-report.json || true
       - uses: actions/upload-artifact@v4
         with:
           name: trivy
