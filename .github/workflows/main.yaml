@@ -1,4 +1,4 @@
-name: Django                                  # workflow name
+name: Django
 
 on:
   push:
@@ -41,23 +41,23 @@ jobs:
           pip install -r requirements.txt
           python manage.py test taskManager
 
-  semgrep:
-    name: semgrep/ci
+  trivy:
+    name: trivy/ci
     needs: test
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - run: docker run --rm -v "${PWD}:/src" returntocorp/semgrep semgrep --config auto --output semgrep-output.json --json
+      - run: docker run --rm -v "${PWD}:/src" hysnsec/trivy fs . --exit-code 1 -f json -o trivy-report.json
       - uses: actions/upload-artifact@v4
         with:
-          name: semgrep
-          path: semgrep-output.json
+          name: trivy
+          path: trivy-report.json
         continue-on-error: true             # allow the build to fail, similar to "allow_failure: true" in GitLab
         if: always()                        # what is this for?
 
   integration:
     runs-on: ubuntu-22.04
-    needs: semgrep
+    needs: trivy
     steps:
       - run: echo "This is an integration step"
       - run: exit 1
