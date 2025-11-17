@@ -67,12 +67,11 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'MEDIUM'
-        env:
-          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db
+        continue-on-error: true             # allow the build to fail, similar to "allow_failure: true" in GitLab
 
   integration:
     runs-on: ubuntu-22.04
-    needs: test
+    needs: container_scanning
     steps:
       - run: echo "This is an integration step"
       - run: exit 1
